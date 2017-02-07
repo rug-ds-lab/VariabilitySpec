@@ -23,10 +23,10 @@ public class VariabilitySpecGen {
 	private void getSpecification() {
 		FileDialog loadDialog = new FileDialog(new Frame(), "Select Petri Net files to include in the specification" , FileDialog.LOAD);
 		loadDialog.setMultipleMode(true);
+		loadDialog.setFile("*.pnml");
 	    loadDialog.setVisible(true);
 	    
 	    List<String> filenames = getFileList(loadDialog.getFiles());
-	    
 	    loadDialog.dispose();
 	    
 		FileDialog outputDialog = new FileDialog(new Frame(), "Select outputfile" , FileDialog.LOAD);

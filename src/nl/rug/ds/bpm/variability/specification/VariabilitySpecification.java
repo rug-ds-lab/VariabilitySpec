@@ -88,6 +88,10 @@ public class VariabilitySpecification {
 		return ces;
 	}
 	
+	public List<String> getAllLabels() {
+		return ces.getAllLabels();
+	}
+	
 //	======================================================================================================
 //	CTL specs
 //	======================================================================================================
@@ -132,7 +136,7 @@ public class VariabilitySpecification {
 				spec = "";
 				for (int e2: resp.get(e1)) {
 					if (!ces.getSilents().contains(e2))
-						spec += ces.getLabel(e2) + " | ";
+						spec += "{" + ces.getLabel(e2) + "}" + " | ";
 				}
 				
 				if (spec.length() > 0) {
@@ -140,10 +144,10 @@ public class VariabilitySpecification {
 					if (resp.get(e1).size() > 1) spec = "(" + spec + ")";
 					
 					if (syncpreds.get(e1)) {
-						spec = "AG(" + ces.getLabel(e1) + " => AF " + spec + ")";
+						spec = "AG(" + "{" + ces.getLabel(e1) + "}" + " => AF " + spec + ")";
 					}
 					else {
-						spec = "AG(" + ces.getLabel(e1) + " => A[(" + ces.getLabel(e1) + " | silent) U " + spec + "])";
+						spec = "AG(" + "{" + ces.getLabel(e1) + "}" + " => A[(" + "{" + ces.getLabel(e1) + "}" + " | silent) U " + spec + "])";
 					}
 		
 					if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
@@ -186,13 +190,13 @@ public class VariabilitySpecification {
 				spec = "";
 				for (int e1: prec.get(e2)) {
 					if (!ces.getSilents().contains(e1))
-						spec += ces.getLabel(e1) + " | ";
+						spec += "{" + ces.getLabel(e1) + "}" + " | ";
 				}
 				
 				if (spec.length() > 0) {
 					spec = spec.substring(0, spec.length() - 3);
 					if (prec.get(e2).size() > 1) spec = "(" + spec + ")";
-					spec = "!E[!" + spec + " U " + ces.getLabel(e2) + "]";
+					spec = "!E[!" + spec + " U " + "{" + ces.getLabel(e2) + "}" + "]";
 							
 					if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 				}
@@ -224,7 +228,8 @@ public class VariabilitySpecification {
 
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target)) &&
 					(ces.occursInAllPESs(target))) {
-				spec = "AG(" + ces.getLabel(source) + " => E[" + ces.getLabel(source) + " | silent) U " + ces.getLabel(target) + "]";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => E[" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
+					"{" + ces.getLabel(target) + "}" + "]";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -244,7 +249,8 @@ public class VariabilitySpecification {
 
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target)) &&
 					(ces.occursInAllPESs(target))) {
-				spec = "AG(" + ces.getLabel(source) + " => E[" + ces.getLabel(source) + " | silent) U " + ces.getLabel(target) + "]";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => E[" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
+					"{" + ces.getLabel(target) + "}" + "]";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -263,7 +269,8 @@ public class VariabilitySpecification {
 			target = r.nextSetBit(source + 1);
 			
 			if (ces.occursInAllPESs(target)) {
-				spec = "AG(" + ces.getLabel(source) + " => E[" + ces.getLabel(source) + " | silent) U " + ces.getLabel(target) + "]";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => E[" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
+					"{" + ces.getLabel(target) + "}" + "]";
 				ctls.add(spec);
 			}
 		}
@@ -282,7 +289,8 @@ public class VariabilitySpecification {
 			target = r.previousSetBit(source - 1);
 			
 			if (ces.occursInAllPESs(target)) {
-				spec = "AG(" + ces.getLabel(source) + " => E[" + ces.getLabel(source) + " | silent) U " + ces.getLabel(target) + "]";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => E[" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
+					"{" + ces.getLabel(target) + "}" + "]";
 				ctls.add(spec);
 			}
 		}
@@ -310,7 +318,7 @@ public class VariabilitySpecification {
 
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target)) &&
 					(ces.occursInAllPESs(target))) {				
-				spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -330,7 +338,7 @@ public class VariabilitySpecification {
 						
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target)) && 
 					(ces.occursInAllPESs(target))) {
-				spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -350,10 +358,10 @@ public class VariabilitySpecification {
 			target = r.nextSetBit(source + 1);
 
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target))) {
-				spec = "AG(" + ces.getLabel(source) + " => AG !" + ces.getLabel(target) + ")";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => AG !" + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 				
-				spec = "AG(" + ces.getLabel(target) + " => AG !" + ces.getLabel(source) + ")";
+				spec = "AG(" + "{" + ces.getLabel(target) + "}" + " => AG !" + "{" + ces.getLabel(source) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -374,7 +382,7 @@ public class VariabilitySpecification {
 			target = r.nextSetBit(source + 1);
 
 			if ((!ces.getSilents().contains(source)) && (!ces.getSilents().contains(target))) {
-				spec = "EF(" + ces.getLabel(source) + " & " + ces.getLabel(target) + ")";
+				spec = "EF(" + "{" + ces.getLabel(source) + "}" + " & " + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
 			}
 		}
@@ -487,7 +495,7 @@ public class VariabilitySpecification {
 						b2 = nru.contains(r2);
 					
 					if (b1 && b2) {
-						spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+						spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 						if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) reduction.add(spec);
 						i = ces.getAllLabels().size(); // make sure search for e" is ended
 					}
@@ -520,7 +528,7 @@ public class VariabilitySpecification {
 						b2 = nru.contains(r2);
 					
 					if (b1 && b2) {
-						spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+						spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 						if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) reduction.add(spec);
 						i = ces.getAllLabels().size(); // make sure search for e" is ended
 					}
@@ -533,7 +541,7 @@ public class VariabilitySpecification {
 				source = r.nextSetBit(0);
 				target = r.nextSetBit(source + 1);
 				
-				spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) reduction.add(spec);
 			}
 			
@@ -541,7 +549,7 @@ public class VariabilitySpecification {
 				source = r.previousSetBit(r.length());
 				target = r.previousSetBit(source - 1);
 				
-				spec = "AG(" + ces.getLabel(source) + " => EF " + ces.getLabel(target) + ")";
+				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " => EF " + "{" + ces.getLabel(target) + "}" + ")";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) reduction.add(spec);
 			}
 		}

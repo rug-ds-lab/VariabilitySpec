@@ -8,16 +8,7 @@ public class SpecificationToXML {
 	
 	public static String getXML(VariabilitySpecification vs, String silentprefix) {
 		String xml = "";
-		List<String> labels = vs.getAllLabels();
-		Map<String, String> labelidmap = new HashMap<String, String>();
-		
-		int i = 0;
-		for (String lbl: labels) {
-			if ((!lbl.startsWith(silentprefix)) && (!lbl.equals("_0_")) && (!lbl.equals("_1_"))) {
-				labelidmap.put(lbl, "ap" + i);
-				i++;
-			}
-		}
+		Map<String, String> labelidmap = getLabelIdMap(vs.getAllLabels(), silentprefix);
 		
 		xml += "<variabilitySpecification>\n";
 		xml += getAPs(labelidmap);
@@ -27,6 +18,20 @@ public class SpecificationToXML {
 		return xml;
 	}
 
+	private static Map<String, String> getLabelIdMap(List<String> labels, String silentprefix) {
+		Map<String, String> labelidmap = new HashMap<String, String>();
+		int i = 0;
+		
+		for (String lbl: labels) {
+			if ((!lbl.startsWith(silentprefix)) && (!lbl.equals("_0_")) && (!lbl.equals("_1_"))) {
+				labelidmap.put(lbl, "ap" + i);
+				i++;
+			}
+		}
+		
+		return labelidmap;
+	}
+	
 	private static String getAPs(Map<String, String> labelidmap) {
 		String aps = "";
 		
@@ -84,7 +89,7 @@ public class SpecificationToXML {
 			reworkedspec = reworkedspec.replace("{" + lbl + "}", "{" + labelidmap.get(lbl) + "}");
 		}
 		
-		source = reworkedspec.substring(reworkedspec.indexOf("{") + 1, reworkedspec.indexOf("}"));
+		source = reworkedspec.substring(reworkedspec.indexOf("{"), reworkedspec.indexOf("}") + 1);
 		
 		specline += "\t\t<specification id=\"Import\" language=\"CTL\" type=\"" + type + "\" source=\"" + source + "\">" + reworkedspec + "</specification>\n";
 

@@ -124,13 +124,15 @@ public class CombinedEventStructure {
 
 		// traverse cutoff traces and replace them with corresponding relations
 		int corr;
-		BitSet corr_succ;
+//		BitSet corr_succ;
 		
 		for (int cutoff: pessem.getCutoffEvents()) {
 			corr = pessem.getCorresponding(cutoff);
 						
 			// add existing loops 
 			if (pessem.getCausesOf(cutoff).get(corr)) {
+				addLoop(cutoff, corr);
+				/*
 				corr_succ = getRealSuccessors(pessem, corr, new BitSet());
 				for (int loopstart = corr_succ.nextSetBit(0); loopstart >= 0; loopstart = corr_succ.nextSetBit(loopstart + 1)) {
 //					if (pessem.getCausesOf(cutoff).get(loopstart)) { // to check whether the loopstart is a true loopstart or a continuation of the process
@@ -139,6 +141,7 @@ public class CombinedEventStructure {
 						addLoop(e1, e2);
 //					}
 				}
+				*/
 			}
 			
 //			// fix direct causality of cutoff event

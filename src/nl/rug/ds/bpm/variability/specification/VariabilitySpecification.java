@@ -260,7 +260,7 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeiLoop() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = ces.getDirectLoops();
+		Set<BitSet> dl = ces.getMutualDirectLoops();
 		String spec;
 		
 		int source, target;
@@ -280,7 +280,7 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeiLoopInv() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = ces.getInvDirectLoops();
+		Set<BitSet> dl = ces.getMutualInvDirectLoops();
 		String spec;
 		
 		int source, target;

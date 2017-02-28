@@ -128,9 +128,10 @@ public class CombinedEventStructure {
 		
 		for (int cutoff: pessem.getCutoffEvents()) {
 			corr = pessem.getCorresponding(cutoff);
-						
+
 			// add existing loops 
-			if (pessem.getCausesOf(cutoff).get(corr)) {
+//			if (pessem.getCausesOf(cutoff).get(corr)) {
+			if (getRealSuccessors(pessem, corr, new BitSet()).get(cutoff)) {
 				addLoop(cutoff, corr);
 				/*
 				corr_succ = getRealSuccessors(pessem, corr, new BitSet());
@@ -315,7 +316,7 @@ public class CombinedEventStructure {
 		BitSet br = hash(e1, e2);
 		if (e1 < e2) {
 			if (!dlpmap.containsKey(br)) dlpmap.put(br, new BitSet());
-			dlpmap.get(br).set(pesCount);;
+			dlpmap.get(br).set(pesCount);
 		}
 		else {
 			if (!idlpmap.containsKey(br)) idlpmap.put(br, new BitSet());
@@ -447,7 +448,15 @@ public class CombinedEventStructure {
 	}
 	
 	private BitSet getRealSuccessors(NewUnfoldingPESSemantics<Integer> pessem, int event, BitSet visited) {
-		BitSet succ = toBitSet(pessem.getDirectSuccessors(event));
+		BitSet succ;
+		
+		if (pessem.getCutoffEvents().contains(event)) {
+			succ = toBitSet(pessem.getDirectSuccessors(getRealCorresponding(pessem, event)));
+		}
+		else {
+			succ = toBitSet(pessem.getDirectSuccessors(event));
+		}
+		
 		BitSet cleansucc = new BitSet();
 		BitSet silents = toBitSet(pessem.getInvisibleEvents());
 		
@@ -493,6 +502,15 @@ public class CombinedEventStructure {
 		}
 		
 		return realpred;
+	}
+	
+	private int getRealCorresponding(NewUnfoldingPESSemantics<Integer> pessem, int event) {
+		int corr = event;
+		
+		while (pessem.getCutoffEvents().contains(corr)) {
+			corr = pessem.getCorresponding(corr);
+		}
+		return corr;
 	}
 	
 	private Map<Integer, BitSet> getCorrespondings(NewUnfoldingPESSemantics<Integer> pessem) {
@@ -679,7 +697,7 @@ public class CombinedEventStructure {
 	public Set<BitSet> getLoops()			 {return lpmap.keySet();}
 	public Set<BitSet> getDirectLoops()		 {return dlpmap.keySet();}
 	public Set<BitSet> getInvDirectLoops()	 {return idlpmap.keySet();}
-	
+		
 	public Set<BitSet> getMutualDirectCausals()    {return directcausals;}
 	public Set<BitSet> getMutualInvDirectCausals() {return invdirectcausals;}
 	public Set<BitSet> getMutualTransCausals() 	   {return transcausals;}
@@ -691,6 +709,68 @@ public class CombinedEventStructure {
 	public Set<BitSet> getMutualLoops()			   {return loops;}
 	public Set<BitSet> getMutualDirectLoops()	   {return directloops;}
 	public Set<BitSet> getMutualInvDirectLoops()   {return invdirectloops;}
+	
+	public Set<BitSet> getImmediateResponses() {
+		Set<BitSet> immresp = new HashSet<BitSet>();
+
+		Set<BitSet> allrel = relmap.keySet();
+		BitSet notpes = new BitSet();
+		BitSet relpes = new BitSet();
+		boolean exists;
+		
+		for (BitSet eir: allrel) {
+			relpes.clear();
+			if (dcmap.containsKey(eir)) relpes.or(dcmap.get(eir));
+			if (dlpmap.containsKey(eir)) relpes.or(dlpmap.get(eir));
+			
+			if (relpes.cardinality() == pesCount) {
+				immresp.add(eir);
+			}
+			else {
+				notpes.set(0, pesCount);
+				notpes.andNot(relpes);
+				exists = false;
+				for (int pes = notpes.nextSetBit(0); pes >= 0; pes = notpes.nextSetBit(pes + 1)) {
+					if (labelmap.get(eir.nextSetBit(0)).get(pes)) exists = true;
+				}
+				
+				if ((!exists) && (notpes.cardinality() > 0)) immresp.add(eir);
+			}
+		}
+		
+		return immresp;
+	}
+	
+	public Set<BitSet> getInvImmediateResponses() {
+		Set<BitSet> invimmresp = new HashSet<BitSet>();
+
+		Set<BitSet> allrel = relmap.keySet();
+		BitSet notpes = new BitSet();
+		BitSet relpes = new BitSet();
+		boolean exists;
+		
+		for (BitSet eir: allrel) {
+			relpes.clear();
+			if (idcmap.containsKey(eir)) relpes.or(idcmap.get(eir));
+			if (idlpmap.containsKey(eir)) relpes.or(idlpmap.get(eir));
+			
+			if (relpes.cardinality() == pesCount) {
+				invimmresp.add(eir);
+			}
+			else {
+				notpes.set(0, pesCount);
+				notpes.andNot(relpes);
+				exists = false;
+				for (int pes = notpes.nextSetBit(0); pes >= 0; pes = notpes.nextSetBit(pes + 1)) {
+					if (labelmap.get(eir.previousSetBit(eir.length())).get(pes)) exists = true;
+				}
+				
+				if ((!exists) && (notpes.cardinality() > 0)) invimmresp.add(eir);
+			}
+		}
+		
+		return invimmresp;
+	}
 	
 	public Boolean containsRelation(Set<BitSet> relations, int e1, int e2) {
 		BitSet r = new BitSet();

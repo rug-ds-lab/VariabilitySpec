@@ -211,14 +211,17 @@ public class VariabilitySpecification {
 		Set<String> ctls = new HashSet<String>();
 		ctls.addAll(getVeirespNrml());
 		ctls.addAll(getVeirespInv());
-		ctls.addAll(getVeiLoop());
-		ctls.addAll(getVeiLoopInv());
+//		ctls.addAll(getVeiLoop());
+//		ctls.addAll(getVeiLoopInv());
 		return new ArrayList<String>(ctls);
 	}
-	
+		
 	private List<String> getVeirespNrml() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dc = ces.getMutualDirectCausals();
+		Set<BitSet> dc = 
+//				ces.getMutualDirectCausals()
+				ces.getImmediateResponses()
+				;
 		String spec;
 		
 		int source, target;
@@ -239,7 +242,10 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeirespInv() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dc = ces.getMutualInvDirectCausals();
+		Set<BitSet> dc = 
+//				ces.getMutualInvDirectCausals()
+				ces.getInvImmediateResponses()
+				;
 		String spec;
 		
 		int source, target;
@@ -260,7 +266,10 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeiLoop() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = ces.getMutualDirectLoops();
+		Set<BitSet> dl = 
+//				ces.getDirectLoops()
+				ces.getMutualDirectLoops()
+				;
 		String spec;
 		
 		int source, target;
@@ -280,7 +289,10 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeiLoopInv() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = ces.getMutualInvDirectLoops();
+		Set<BitSet> dl = 
+//				ces.getInvDirectLoops()
+				ces.getMutualInvDirectLoops()
+				;
 		String spec;
 		
 		int source, target;

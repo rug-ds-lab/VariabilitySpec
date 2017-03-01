@@ -29,6 +29,8 @@ public class VariabilitySpecGen {
 	    List<String> filenames = getFileList(loadDialog.getFiles());
 	    loadDialog.dispose();
 	    
+	    if (filenames.size() == 0) return;
+	    
 		FileDialog outputDialog = new FileDialog(new Frame(), "Select outputfile" , FileDialog.LOAD);
 		outputDialog.setFile("*.xml");
 		outputDialog.setMultipleMode(false);

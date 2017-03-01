@@ -211,17 +211,12 @@ public class VariabilitySpecification {
 		Set<String> ctls = new HashSet<String>();
 		ctls.addAll(getVeirespNrml());
 		ctls.addAll(getVeirespInv());
-//		ctls.addAll(getVeiLoop());
-//		ctls.addAll(getVeiLoopInv());
 		return new ArrayList<String>(ctls);
 	}
 		
 	private List<String> getVeirespNrml() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dc = 
-//				ces.getMutualDirectCausals()
-				ces.getImmediateResponses()
-				;
+		Set<BitSet> dc = ces.getImmediateResponses();
 		String spec;
 		
 		int source, target;
@@ -242,10 +237,7 @@ public class VariabilitySpecification {
 	
 	private List<String> getVeirespInv() {
 		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dc = 
-//				ces.getMutualInvDirectCausals()
-				ces.getInvImmediateResponses()
-				;
+		Set<BitSet> dc = ces.getInvImmediateResponses();
 		String spec;
 		
 		int source, target;
@@ -258,52 +250,6 @@ public class VariabilitySpecification {
 				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " -> E[(" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
 					"{" + ces.getLabel(target) + "}" + "])";
 				if ((!spec.contains("_0_")) && (!spec.contains("_1_"))) ctls.add(spec);
-			}
-		}
-		
-		return ctls;
-	}
-	
-	private List<String> getVeiLoop() {
-		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = 
-//				ces.getDirectLoops()
-				ces.getMutualDirectLoops()
-				;
-		String spec;
-		
-		int source, target;
-		for (BitSet r: dl) {
-			source = r.nextSetBit(0);
-			target = r.nextSetBit(source + 1);
-			
-			if (ces.occursInAllPESs(target)) {
-				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " -> E[(" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
-					"{" + ces.getLabel(target) + "}" + "])";
-				ctls.add(spec);
-			}
-		}
-		
-		return ctls;
-	}
-	
-	private List<String> getVeiLoopInv() {
-		List<String> ctls = new ArrayList<String>();
-		Set<BitSet> dl = 
-//				ces.getInvDirectLoops()
-				ces.getMutualInvDirectLoops()
-				;
-		String spec;
-		
-		int source, target;
-		for (BitSet r: dl) {
-			source = r.previousSetBit(r.length());
-			target = r.previousSetBit(source - 1);
-			
-			if (ces.occursInAllPESs(target)) {
-				spec = "AG(" + "{" + ces.getLabel(source) + "}" + " -> E[(" + "{" + ces.getLabel(source) + "}" + " | silent) U " + 
-					"{" + ces.getLabel(target) + "}" + "])";
-				ctls.add(spec);
 			}
 		}
 		

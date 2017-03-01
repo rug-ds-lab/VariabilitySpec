@@ -124,28 +124,16 @@ public class CombinedEventStructure {
 
 		// traverse cutoff traces and replace them with corresponding relations
 		int corr;
-//		BitSet corr_succ;
 		
 		for (int cutoff: pessem.getCutoffEvents()) {
 			corr = pessem.getCorresponding(cutoff);
 
 			// add existing loops 
-//			if (pessem.getCausesOf(cutoff).get(corr)) {
 			if (getRealSuccessors(pessem, corr, new BitSet()).get(cutoff)) {
 				addLoop(cutoff, corr);
-				/*
-				corr_succ = getRealSuccessors(pessem, corr, new BitSet());
-				for (int loopstart = corr_succ.nextSetBit(0); loopstart >= 0; loopstart = corr_succ.nextSetBit(loopstart + 1)) {
-//					if (pessem.getCausesOf(cutoff).get(loopstart)) { // to check whether the loopstart is a true loopstart or a continuation of the process
-						e1 = totalLabels.indexOf(pessem.getLabel(cutoff));
-						e2 = totalLabels.indexOf(pessem.getLabel(loopstart));
-						addLoop(e1, e2);
-//					}
-				}
-				*/
 			}
 			
-//			// fix direct causality of cutoff event
+			// fix direct causality of cutoff event
 			pessem.getDirectSuccessors(cutoff).addAll(pessem.getDirectSuccessors(corr));
 			
 			// fix causality relations of cutoff event
@@ -587,25 +575,6 @@ public class CombinedEventStructure {
 						break;
 				}
 			}
-//			else if (relation.cardinality() == 2) {
-//				if (!(relation.get(4)) && !(relation.get(5))) { // no conflict and no concurrency, so causality 
-//					if (relation.get(2)) {
-//						existcausals.add(key);
-//					}
-//					if (relation.get(3)) {
-//						invexistcausals.add(key);
-//					}
-//				}
-//				else if ((relation.get(0)) && (relation.get(1))) { // {<, >}
-//					directcausals.add(key);
-//					invdirectcausals.add(key);
-//				}
-//				else if ((relation.get(2)) && (relation.get(3))) { // {<=, >=}
-//					transcausals.add(key);
-//					invtranscausals.add(key);
-//				}
-//				
-//			}
 			else if (relation.cardinality() > 1) {
 				if (relation.get(0)) {
 					if (dcmap.get(key).equals(relmap.get(key))) directcausals.add(key);

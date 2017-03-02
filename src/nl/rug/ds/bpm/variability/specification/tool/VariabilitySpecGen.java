@@ -27,7 +27,8 @@ public class VariabilitySpecGen {
 	    loadDialog.setVisible(true);
 	    
 	    List<String> filenames = getFileList(loadDialog.getFiles());
-	    loadDialog.dispose();
+		String outputfolder = loadDialog.getDirectory();
+		loadDialog.dispose();
 	    
 	    if (filenames.size() == 0) return;
 	    
@@ -37,11 +38,21 @@ public class VariabilitySpecGen {
 		outputDialog.setVisible(true);
 		
 		String outputfile;
+		if (!outputfolder.endsWith("/")) outputfolder += "/";
+		
 		if(outputDialog.getFile() != null) {
 			outputfile = outputDialog.getDirectory() + outputDialog.getFile();
 		}
 		else {
-			outputfile = "specification.xml";
+			outputfile = outputfolder + "specification.xml";
+			
+			File f = new File(outputfile);
+			int i = 2;
+			while(f.exists()) {
+				outputfile = outputfolder + "specification(" + i + ").xml";
+				i++;
+				f = new File(outputfile);
+			}
 		}
 		
 		outputDialog.dispose();
